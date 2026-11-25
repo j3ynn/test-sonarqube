@@ -1,0 +1,27 @@
+name: SonarQube
+#quando parte la pipeline
+on:
+  push:
+    branches: [main] #a ogni push
+  workflow_dispatch: #a mano
+
+jobs:
+  sonar:
+    runs-on: self-hosted
+    steps:
+
+      - name: checkout del codice
+        #pezzo già pronto scritto da github, (fa un git clone del repo sul runner)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: analisi sonarqube
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+        with:
+          args: >
+            -Dsonar.projectKey=prova-onboarding
+          # projectKey -> il progetto che hai creato su Sonar
